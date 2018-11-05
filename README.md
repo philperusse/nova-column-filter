@@ -4,6 +4,7 @@ A Laravel Nova column queryer filter
 
 ### Demo
 
+![Demo](http://g.recordit.co/lzkVNWA5De.gif)
 
 ### Installation
 
@@ -13,28 +14,57 @@ Run this command in your Laravel Nova project:
 
 ### Usage
 
-Extend your filter class with the ColumnFilter class instead of Nova's base Filter class.
+Create a filter with `artisan`
+
+```shell 
+ $ php artisan nova:filter UserColumnFilter 
+ ```
+Extend your filter class with the ColumnFilter class instead of Nova's base Filter class and add the columns on which you want to filter on in the options
 
 ```php
 use \philperusse\Filters\ColumnFilter as Filter;
 
 class ColumnFilter extends Filter
 {
+  
+   /**
+    * Apply the filter to the given query.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @param  \Illuminate\Database\Eloquent\Builder  $query
+    * @param  mixed  $value
+    * @return \Illuminate\Database\Eloquent\Builder
+   */	 
   public function apply( Request $request, $query, $value )
+  {
+     $args = collect($value)->values()->filter(); //Remove any empty keys.
+     if($args->isEmpty())
+          return $query;
+		  
+      return $query->where(...$args->all());
+  }
+  
+  /**
+   * Get the filter's available options.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return array
+   */
+  public function options( Request $request ) : array
     {
-        $args = collect($value)->values()->filter(); //Remove any empty keys.
-        if($args->isEmpty())
-            return $query;
-
-        return $query->where(...$args->all());
+        return array_merge(parent::options($request), [
+            'columns' => [
+                'name'      => 'Name',
+                'age'       => 'Age',
+            ]
+        ]);
     }
 }
 ```
 
 ### Customization
 
-You must pass an array of columns to the filter through its options.
-You can also customize the operator list.
+You can customize the operator list by overriding the `operators` key in the filters options.
 
 ```php
 use philperusse\Filters\ColumnFilter as Filter;
