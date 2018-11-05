@@ -1,5 +1,5 @@
 {
-    "name": "philperusse/column-filter",
+    "name": "philperusse/nova-column-filter",
     "description": "A Laravel Nova column queryer filter",
     "authors": [
         {
