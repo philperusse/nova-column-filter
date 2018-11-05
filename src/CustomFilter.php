@@ -1,11 +1,10 @@
 <?php
 
-namespace philperusse\ColumnFilter;
+namespace philperusse\Filters;
 
 use Illuminate\Container\Container;
 use Illuminate\Http\Request;
 use Laravel\Nova\Filters\Filter;
-
 
 abstract class CustomFilter extends Filter
 {

@@ -17,13 +17,13 @@
     },
     "autoload": {
         "psr-4": {
-            "philperusse\\ColumnFilter\\": "src/"
+            "philperusse\\Filters\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "philperusse\\ColumnFilter\\FieldServiceProvider"
+                "philperusse\\Filters\\FieldServiceProvider"
             ]
         }
     },
