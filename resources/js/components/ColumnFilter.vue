@@ -52,7 +52,7 @@
     export default {
         props: {
             value : {
-                type: Object,
+                type: [String, Object],
                 default : () =>  ({
                     column : '',
                     operator : '',
