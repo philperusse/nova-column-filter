@@ -6,7 +6,7 @@ use Laravel\Nova\Nova;
 use Laravel\Nova\Events\ServingNova;
 use Illuminate\Support\ServiceProvider;
 
-class FieldServiceProvider extends ServiceProvider
+class FilterServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
@@ -16,7 +16,7 @@ class FieldServiceProvider extends ServiceProvider
     public function boot()
     {
         Nova::serving(function (ServingNova $event) {
-            Nova::script('nova-column-filter', __DIR__.'/../dist/js/nova-filter.js');
+            Nova::script('nova-column-filter', __DIR__.'/../dist/js/filter.js');
         });
     }
 }

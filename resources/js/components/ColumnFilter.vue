@@ -1,49 +1,55 @@
 <template>
-    <div class="flex">
-        <select
-                :dusk="filter.name + '-column-filter-select'"
-                class="block w-full form-control-sm form-select mr-2"
-                v-model="column"
-                @change="filterChange">
-            <option
-                    value=""
-                    selected
-            >&mdash;</option>
-            <option
-                    v-for="(value, key) in filter.options.columns"
-                    :key="key"
-                    :value="key"
-                    v-html="value"
+    <div>
+        <h3 class="text-sm uppercase tracking-wide text-80 bg-30 p-3">
+            {{ filter.name }}
+        </h3>
+        <div class="flex p-2">
+            <select
+                    :dusk="filter.name + '-column-filter-select'"
+                    class="block w-full form-control-sm form-select mr-2"
+                    v-model="column"
+                    @change="handleChange">
+                <option
+                        value=""
+                        selected
+                >&mdash;</option>
+                <option
+                        v-for="(value, key) in filter.options.columns"
+                        :key="key"
+                        :value="key"
+                        v-html="value"
+                >
+                </option>
+            </select>
+            <select
+                    :dusk="filter.name + '-operator-filter-select'"
+                    class="block w-full form-control-sm form-select mr-2"
+                    v-model="operator"
+                    @change="handleChange"
             >
-            </option>
-        </select>
-        <select
-                :dusk="filter.name + '-operator-filter-select'"
-                class="block w-full form-control-sm form-select mr-2"
-                v-model="operator"
-                @change="filterChange"
-        >
-            <option
-                    value=""
-                    selected
-            >&mdash;</option>
-            <option
-                    v-for="(value, key) in filter.options.operators"
-                    :key="key"
-                    :value="key"
-                    v-html="value"
+                <option
+                        value=""
+                        selected
+                >&mdash;</option>
+                <option
+                        v-for="(value, key) in filter.options.operators"
+                        :key="key"
+                        :value="key"
+                        v-html="value"
+                >
+
+                </option>
+            </select>
+
+            <input type="text"
+                   v-model="data"
+                   class="block w-full form-control-sm form-input form-input-bordered"
+                   @change="handleChange"
             >
 
-            </option>
-        </select>
-
-        <input type="text"
-               v-model="data"
-               class="block w-full form-control-sm form-input form-input-bordered"
-               @change="filterChange"
-        >
-
+        </div>
     </div>
+
 </template>
 
 
@@ -51,18 +57,10 @@
 
     export default {
         props: {
-            value : {
-                type: [String, Object],
-                default : () =>  ({
-                    column : '',
-                    operator : '',
-                    data : ''
-                })
-            },
-            filter: {
-                type: Object,
-                default: () => ({})
-            },
+            filterKey: {
+                type: String,
+                required: true,
+            }
         },
         data() {
             return {
@@ -77,17 +75,32 @@
             this.data = this.value.data || '';
         },
         methods: {
-            filterChange : function (){
-
-                if(this.column && this.operator && this.data)
-                    return this.$emit('input', this.$data)
-
-                this.$emit('input',  {
+            handleChange : function (){
+                let newValue = {
                     'column' : '',
                     'operator' : '',
                     'data' : ''
+                };
+
+                if(this.column && this.operator && this.data)
+                    newValue  = this.$data;
+
+                this.$store.commit('updateFilterState', {
+                    filterClass: this.filterKey,
+                    value: newValue,
                 });
+
+                this.$emit('change');
             }
+        },
+        computed: {
+            filter() {
+                return this.$store.getters.getFilter(this.filterKey)
+            },
+
+            value() {
+                return this.filter.currentValue
+            },
         }
     }
 

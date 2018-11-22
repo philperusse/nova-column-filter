@@ -13,7 +13,8 @@
     ],
     "license": "MIT",
     "require": {
-        "php": ">=7.1.0"
+        "php": ">=7.1.0",
+        "laravel/nova" : ">=1.1.8"
     },
     "autoload": {
         "psr-4": {
@@ -23,7 +24,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "philperusse\\Filters\\FieldServiceProvider"
+                "philperusse\\Filters\\FilterServiceProvider"
             ]
         }
     },
