@@ -7,15 +7,11 @@
             <select
                     :dusk="filter.name + '-column-filter-select'"
                     class="block w-full form-control-sm form-select mr-2"
-                    v-model="column"
-                    @change="handleChange">
+                    @change="handleChange"
+                    v-model="currentValue.column">
+                <option value="">&mdash;</option>
                 <option
-                        value=""
-                        selected
-                >&mdash;</option>
-                <option
-                        v-for="(value, key) in filter.options.columns"
-                        :key="key"
+                        v-for="(value, key) in this.getOption('columns')"
                         :value="key"
                         v-html="value"
                 >
@@ -24,7 +20,7 @@
             <select
                     :dusk="filter.name + '-operator-filter-select'"
                     class="block w-full form-control-sm form-select mr-2"
-                    v-model="operator"
+                    v-model="currentValue.operator"
                     @change="handleChange"
             >
                 <option
@@ -32,8 +28,7 @@
                         selected
                 >&mdash;</option>
                 <option
-                        v-for="(value, key) in filter.options.operators"
-                        :key="key"
+                        v-for="(value, key) in this.getOption('operators')"
                         :value="key"
                         v-html="value"
                 >
@@ -42,7 +37,7 @@
             </select>
 
             <input type="text"
-                   v-model="data"
+                   v-model="currentValue.data"
                    class="block w-full form-control-sm form-input form-input-bordered"
                    @change="handleChange"
             >
@@ -64,43 +59,46 @@
         },
         data() {
             return {
-                column : '',
-                operator : '',
-                data : ''
+                currentValue : {
+                    column : '',
+                    operator : '',
+                    data : ''
+                }
             }
         },
         mounted() {
-            this.column = this.value.column || '';
-            this.operator = this.value.operator || '';
-            this.data = this.value.data || '';
+            this.currentValue = this.value
         },
         methods: {
-            handleChange : function (){
-                let newValue = {
-                    'column' : '',
-                    'operator' : '',
-                    'data' : ''
-                };
-
-                if(this.column && this.operator && this.data)
-                    newValue  = this.$data;
+            handleChange : function (event){
+                if(! this.currentValue.column || !this.currentValue.operator || !this.currentValue.data)
+                    return;
 
                 this.$store.commit('updateFilterState', {
                     filterClass: this.filterKey,
-                    value: newValue,
+                    value: this.currentValue,
                 });
 
                 this.$emit('change');
+            },
+            getOption(name){
+                let key = _.findKey(this.options, (o) => o.name === name)
+                if(! key)
+                    return null;
+
+                return this.options[key].value
             }
         },
         computed: {
             filter() {
                 return this.$store.getters.getFilter(this.filterKey)
             },
-
             value() {
-                return this.filter.currentValue
+                return this.filter.currentValue;
             },
+            options() {
+                return this.$store.getters.getOptionsForFilter(this.filterKey)
+            }
         }
     }
 
