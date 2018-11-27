@@ -12,7 +12,7 @@ class ColumnFilter extends Filter
     public function apply(Request $request, $query, $value)
     {
         $args = collect($value)->values()->filter();
-        return $args->isEmpty() ?
+        return $args->count() !== 3 ?
             $query :
             $query->where(...$args->all());
     }

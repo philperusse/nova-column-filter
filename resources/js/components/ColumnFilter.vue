@@ -8,7 +8,7 @@
                     :dusk="filter.name + '-column-filter-select'"
                     class="block w-full form-control-sm form-select mr-2"
                     @change="handleChange"
-                    v-model="currentValue.column">
+                    v-model="column">
                 <option value="">&mdash;</option>
                 <option
                         v-for="(value, key) in this.getOption('columns')"
@@ -20,7 +20,7 @@
             <select
                     :dusk="filter.name + '-operator-filter-select'"
                     class="block w-full form-control-sm form-select mr-2"
-                    v-model="currentValue.operator"
+                    v-model="operator"
                     @change="handleChange"
             >
                 <option
@@ -37,7 +37,7 @@
             </select>
 
             <input type="text"
-                   v-model="currentValue.data"
+                   v-model="data"
                    class="block w-full form-control-sm form-input form-input-bordered"
                    @change="handleChange"
             >
@@ -59,28 +59,36 @@
         },
         data() {
             return {
-                currentValue : {
-                    column : '',
-                    operator : '',
-                    data : ''
-                }
+                column : '',
+                operator : '',
+                data : ''
             }
         },
         mounted() {
-            this.currentValue = this.value
+            this.column = this.value.column || ''
+            this.operator = this.value.operator || ''
+            this.data = this.value.data || ''
         },
         methods: {
             handleChange : function (event){
-                if(! this.currentValue.column || !this.currentValue.operator || !this.currentValue.data)
-                    return;
+                let newValue = {
+                    column : this.column,
+                    operator : this.operator,
+                    data : this.data
+                }
+                if(! this.column || ! this.operator || ! this.data)
+                    newValue = ""
+
+                let shouldRaise = newValue !== this.value;
 
                 this.$store.commit('updateFilterState', {
                     filterClass: this.filterKey,
-                    value: this.currentValue,
+                    value: newValue
                 });
 
-                this.$emit('change');
+                this.shouldRaise && this.$emit('change');
             },
+
             getOption(name){
                 let key = _.findKey(this.options, (o) => o.name === name)
                 if(! key)

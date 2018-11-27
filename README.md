@@ -1,6 +1,8 @@
 # Column Filter for Laravel Nova
 
-A Laravel Nova column querier filter
+A Laravel Nova column querier filter for Nova > v1.1.8
+
+*Prior to Nova v.1.1.8, use the [0.1.1 version](https://github.com/philperusse/nova-column-filter/tree/0.1.1).*
 
 ### Demo
 
