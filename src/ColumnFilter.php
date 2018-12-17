@@ -16,20 +16,30 @@ class ColumnFilter extends Filter
             $query :
             $query->where(...$args->all());
     }
+    
+    public function columns()
+    {
+        return [
+            //
+        ];
+    }
 
+    public function operators()
+    {
+        return [
+            '=' => '&equals;',
+            '>' => '&gt;',
+            '>=' => '&ge;',
+            '<' => '&lt;',
+            '<=' => '&le;',
+        ];
+    }
+    
     public function options( Request $request )
     {
         return [
-            'columns' => [
-                //
-            ],
-            'operators' => [
-                '=' => '&equals;',
-                '>' => '&gt;',
-                '>=' => '&ge;',
-                '<' => '&lt;',
-                '<=' => '&le;',
-            ],
+            'columns' => $this->columns(),
+            'operators' => $this->operators(),
             'data' => '',
         ];
     }
