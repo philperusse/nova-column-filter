@@ -55,7 +55,11 @@
             filterKey: {
                 type: String,
                 required: true,
-            }
+            },
+            resourceName: {
+                type: String,
+                required: true,
+            },
         },
         data() {
             return {
@@ -81,7 +85,7 @@
 
                 let shouldRaise = newValue !== this.value;
 
-                this.$store.commit('updateFilterState', {
+                this.$store.commit(`${this.resourceName}/updateFilterState`, {
                     filterClass: this.filterKey,
                     value: newValue
                 });
@@ -99,13 +103,13 @@
         },
         computed: {
             filter() {
-                return this.$store.getters.getFilter(this.filterKey)
+                return this.$store.getters[`${this.resourceName}/getFilter`](this.filterKey)
             },
             value() {
                 return this.filter.currentValue;
             },
             options() {
-                return this.$store.getters.getOptionsForFilter(this.filterKey)
+                return this.$store.getters[`${this.resourceName}/getOptionsForFilter`](this.filterKey)
             }
         }
     }
