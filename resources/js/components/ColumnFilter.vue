@@ -95,10 +95,16 @@
 
             getOption(name){
                 let key = _.findKey(this.options, (o) => o.name === name)
-                if(! key)
-                    return null;
 
-                return this.options[key].value
+                if(key)
+                    return this.options[key].value;
+                
+                let obj = _.find(this.options, (o) => o.value === name)
+
+                if(obj)
+                    return _.omit(obj, 'value');
+
+                return null;
             }
         },
         computed: {
