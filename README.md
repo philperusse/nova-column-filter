@@ -132,11 +132,6 @@ class ColumnFilter extends Filter
             ]
         ]);
     }
-
-    protected function componentName()
-    {
-        return 'column-filter';
-    }
 }
 ```
 
