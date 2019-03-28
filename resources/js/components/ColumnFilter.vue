@@ -100,7 +100,7 @@
 
                 this.$store.commit(`${this.resourceName}/updateFilterState`, {
                     filterClass: this.filterKey,
-                    value: newValue,
+                    value: newValue
                 })
 
                 this.$emit('change');
