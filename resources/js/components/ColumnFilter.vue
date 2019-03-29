@@ -8,7 +8,8 @@
                     :dusk="filter.name + '-column-filter-select'"
                     class="block w-full form-control-sm form-select mr-2"
                     @change="handleChange"
-                    v-model="column">
+                    v-model="column"
+                    v-if="this.getOption('columns')">
                 <option value="">&mdash;</option>
                 <option
                         v-for="(value, key) in this.getOption('columns')"
@@ -17,6 +18,13 @@
                 >
                 </option>
             </select>
+            <input type="text"
+                   :dusk="filter.name + '-column-filter-select'"
+                   class="block w-full form-control-sm form-input mr-2 form-input-bordered"
+                   @change="handleChange"
+                   v-model="column"
+                   v-if="!this.getOption('columns')"
+            >
             <select
                     :dusk="filter.name + '-operator-filter-select'"
                     class="block w-full form-control-sm form-select mr-2"
@@ -80,17 +88,22 @@
                     operator : this.operator,
                     data : this.data
                 }
-                if(! this.column || ! this.operator || ! this.data)
-                    newValue = ""
 
-                let shouldRaise = newValue !== this.value;
+                if (
+                    _.isEmpty(this.column) ||
+                    _.isEmpty(this.operator) ||
+                    this.column == '' ||
+                    this.operator == ''
+                ) {
+                    return
+                }
 
                 this.$store.commit(`${this.resourceName}/updateFilterState`, {
                     filterClass: this.filterKey,
                     value: newValue
-                });
+                })
 
-                this.shouldRaise && this.$emit('change');
+                this.$emit('change');
             },
 
             getOption(name){

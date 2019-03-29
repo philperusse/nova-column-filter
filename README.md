@@ -99,6 +99,42 @@ class ColumnFilter extends Filter
 }
 ```
 
+Also you can have users write the column names by settings `columns` to `false` and setting a custom `apply` function. This is useful when searching JSON data.
+
+```php
+use philperusse\Filters\ColumnFilter as Filter;
+
+class ColumnFilter extends Filter
+{
+    public function apply( Request $request, $query, $value )
+    {
+        $args = collect($value)->values()->filter();
+
+        // Only filter if all conditions are provided
+        if ($args->count() !== 3) {
+            return $query;
+        }
+
+        $query->where(function (\Illuminate\Database\Eloquent\Builder $query) use ($args) {
+            $query->where("metadata->{$args[0]}", $args[1], $args[2]);
+        });
+
+        return $query;
+    }
+
+    public function options( Request $request ) 
+    {
+        return array_merge(parent::options($request), [
+            'columns' => false,
+            'operators' => [
+                '='     => 'is',
+                '!='    => 'is not',
+            ]
+        ]);
+    }
+}
+```
+
 
 ### Contributions
 
