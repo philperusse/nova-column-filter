@@ -3,6 +3,7 @@
 namespace philperusse\Filters;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Laravel\Nova\Filters\Filter;
 
 class ColumnFilter extends Filter
@@ -12,11 +13,19 @@ class ColumnFilter extends Filter
     public function apply(Request $request, $query, $value)
     {
         $args = collect($value)->values()->filter();
-        return $args->count() !== 3 ?
-            $query :
-            $query->where(...$args->all());
+
+        if ($args->count() !== 3) {
+            return $query;
+        }
+
+        $transformName = 'transform' . Str::studly($args[0]) . 'Value';
+        if (method_exists($this, $transformName)) {
+            $args[2] = $this->{$transformName}($args[2]);
+        }
+
+        return $query->where(...$args->all());
     }
-    
+
     public function columns()
     {
         return [
@@ -34,7 +43,7 @@ class ColumnFilter extends Filter
             '<=' => '&le;',
         ];
     }
-    
+
     public function options( Request $request )
     {
         return [
